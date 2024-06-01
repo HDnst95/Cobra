@@ -7,6 +7,8 @@ public class MainThread extends Thread {
     private SurfaceHolder surfaceHolder;
     private GameView gameView;
     private boolean running;
+    public static final int MAX_FPS = 30;
+    private double averageFPS;
 
     public MainThread(SurfaceHolder surfaceHolder, GameView gameView) {
         super();
@@ -20,17 +22,24 @@ public class MainThread extends Thread {
 
     @Override
     public void run() {
+        long startTime;
+        long timeMillis;
+        long waitTime;
+        long totalTime = 0;
+        int frameCount = 0;
+        long targetTime = 1000 / MAX_FPS;
+
         while (running) {
+            startTime = System.nanoTime();
             Canvas canvas = null;
+
             try {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
-                    if (canvas != null) {
-                        gameView.draw(canvas); // call draw, not onDraw
-                    }
+                    this.gameView.update();
+                    this.gameView.draw(canvas);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
             } finally {
                 if (canvas != null) {
                     try {
@@ -39,6 +48,25 @@ public class MainThread extends Thread {
                         e.printStackTrace();
                     }
                 }
+            }
+
+            timeMillis = (System.nanoTime() - startTime) / 1000000;
+            waitTime = targetTime - timeMillis;
+
+            try {
+                if (waitTime > 0) {
+                    this.sleep(waitTime);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            totalTime += System.nanoTime() - startTime;
+            frameCount++;
+            if (frameCount == MAX_FPS) {
+                averageFPS = 1000 / ((totalTime / frameCount) / 1000000);
+                frameCount = 0;
+                totalTime = 0;
             }
         }
     }

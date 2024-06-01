@@ -4,17 +4,34 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.Path;
+import android.graphics.Point;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private MainThread thread;
-    private Player player;
-    private Enemy enemy;
+    private ArrayList<Point> snake;
+    private Point food;
     private Paint paint;
+    private int direction;
+    private boolean running;
     private OnGameOverListener onGameOverListener;
+
+    private static final int GRID_SIZE = 40; // Erhöhe die Größe der Zellen
+    private static final int MOVE_RIGHT = 0;
+    private static final int MOVE_LEFT = 1;
+    private static final int MOVE_UP = 2;
+    private static final int MOVE_DOWN = 3;
+
+    private float touchX;
+    private float touchY;
+    private boolean showTouchIndicator;
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -22,10 +39,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
 
-        player = new Player(new Rect(100, 100, 200, 200), Color.BLUE);
-        enemy = new Enemy(new Rect(300, 300, 400, 400), Color.RED);
+        snake = new ArrayList<>();
+        snake.add(new Point(5, 5));
+        snake.add(new Point(4, 5));
+        snake.add(new Point(3, 5));
+
+        food = new Point(10, 10);
 
         paint = new Paint();
+        direction = MOVE_RIGHT;
+        running = true;
     }
 
     @Override
@@ -54,32 +77,156 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        canvas.drawColor(Color.WHITE);
-        player.draw(canvas);
-        enemy.draw(canvas);
+        if (canvas != null) {
+            canvas.drawColor(Color.WHITE);
 
-        // Check for collision
-        if (Rect.intersects(player.getRectangle(), enemy.getRectangle())) {
-            // Handle collision
-            paint.setColor(Color.BLACK);
-            paint.setTextSize(100);
-            canvas.drawText("Game Over", getWidth() / 2 - 200, getHeight() / 2, paint);
-            thread.setRunning(false);
+            // Zeichne die Richtungszonen
+            paint.setColor(Color.TRANSPARENT);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(5);
+            canvas.drawRect(0, 0, getWidth(), getHeight() / 3, paint); // Oben
+            canvas.drawRect(0, 2 * getHeight() / 3, getWidth(), getHeight(), paint); // Unten
+            canvas.drawRect(0, getHeight() / 3, getWidth() / 3, 2 * getHeight() / 3, paint); // Links
+            canvas.drawRect(2 * getWidth() / 3, getHeight() / 3, getWidth(), 2 * getHeight() / 3, paint); // Rechts
+
+            // Zeichne die Pfeile
+            paint.setColor(Color.LTGRAY);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setAlpha(100); // Setze Transparenz
+
+            // Pfeil nach oben
+            Path pathUp = new Path();
+            pathUp.moveTo(getWidth() / 2, getHeight() / 6);
+            pathUp.lineTo(getWidth() / 2 - 50, getHeight() / 3 - 50);
+            pathUp.lineTo(getWidth() / 2 + 50, getHeight() / 3 - 50);
+            pathUp.close();
+            canvas.drawPath(pathUp, paint);
+
+            // Pfeil nach unten
+            Path pathDown = new Path();
+            pathDown.moveTo(getWidth() / 2, 5 * getHeight() / 6);
+            pathDown.lineTo(getWidth() / 2 - 50, 2 * getHeight() / 3 + 50);
+            pathDown.lineTo(getWidth() / 2 + 50, 2 * getHeight() / 3 + 50);
+            pathDown.close();
+            canvas.drawPath(pathDown, paint);
+
+            // Pfeil nach links
+            Path pathLeft = new Path();
+            pathLeft.moveTo(getWidth() / 6, getHeight() / 2);
+            pathLeft.lineTo(getWidth() / 3 - 50, getHeight() / 2 - 50);
+            pathLeft.lineTo(getWidth() / 3 - 50, getHeight() / 2 + 50);
+            pathLeft.close();
+            canvas.drawPath(pathLeft, paint);
+
+            // Pfeil nach rechts
+            Path pathRight = new Path();
+            pathRight.moveTo(5 * getWidth() / 6, getHeight() / 2);
+            pathRight.lineTo(2 * getWidth() / 3 + 50, getHeight() / 2 - 50);
+            pathRight.lineTo(2 * getWidth() / 3 + 50, getHeight() / 2 + 50);
+            pathRight.close();
+            canvas.drawPath(pathRight, paint);
+
+            // Zeichne die Schlange
+            paint.setColor(Color.GREEN);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setAlpha(255);
+            for (Point p : snake) {
+                canvas.drawRect(p.x * GRID_SIZE, p.y * GRID_SIZE, (p.x + 1) * GRID_SIZE, (p.y + 1) * GRID_SIZE, paint);
+            }
+
+            // Zeichne die Nahrung
+            paint.setColor(Color.RED);
+            canvas.drawRect(food.x * GRID_SIZE, food.y * GRID_SIZE, (food.x + 1) * GRID_SIZE, (food.y + 1) * GRID_SIZE, paint);
+
+            // Zeichne den Berührungsindikator
+            if (showTouchIndicator) {
+                paint.setColor(Color.BLUE);
+                canvas.drawCircle(touchX, touchY, 50, paint);
+            }
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            touchX = event.getX();
+            touchY = event.getY();
+            showTouchIndicator = true;
+
+            if (touchY < getHeight() / 3 && direction != MOVE_DOWN) {
+                direction = MOVE_UP;
+            } else if (touchY > 2 * getHeight() / 3 && direction != MOVE_UP) {
+                direction = MOVE_DOWN;
+            } else if (touchX < getWidth() / 3 && direction != MOVE_RIGHT) {
+                direction = MOVE_LEFT;
+            } else if (touchX > 2 * getWidth() / 3 && direction != MOVE_LEFT) {
+                direction = MOVE_RIGHT;
+            }
+
+            invalidate(); // Aktualisiere die Ansicht, um den Berührungsindikator anzuzeigen
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            showTouchIndicator = false;
+            invalidate(); // Aktualisiere die Ansicht, um den Berührungsindikator zu entfernen
+        }
+        return true;
+    }
+
+    public void update() {
+        if (!running) return;
+
+        Point head = snake.get(0);
+        Point newHead = new Point(head.x, head.y);
+
+        switch (direction) {
+            case MOVE_RIGHT:
+                newHead.x++;
+                break;
+            case MOVE_LEFT:
+                newHead.x--;
+                break;
+            case MOVE_UP:
+                newHead.y--;
+                break;
+            case MOVE_DOWN:
+                newHead.y++;
+                break;
+        }
+
+        if (newHead.equals(food)) {
+            snake.add(0, newHead);
+            generateFood();
+        } else {
+            for (int i = snake.size() - 1; i > 0; i--) {
+                snake.set(i, snake.get(i - 1));
+            }
+            snake.set(0, newHead);
+        }
+
+        if (checkCollision(newHead)) {
+            running = false;
             if (onGameOverListener != null) {
                 onGameOverListener.onGameOver();
             }
         }
     }
 
-    @Override
-    public boolean onTouchEvent(android.view.MotionEvent event) {
-        switch (event.getAction()) {
-            case android.view.MotionEvent.ACTION_DOWN:
-            case android.view.MotionEvent.ACTION_MOVE:
-                player.setPosition((int) event.getX(), (int) event.getY());
-                break;
+    private void generateFood() {
+        Random random = new Random();
+        food.set(random.nextInt(getWidth() / GRID_SIZE), random.nextInt(getHeight() / GRID_SIZE));
+    }
+
+    private boolean checkCollision(Point head) {
+        if (head.x < 0 || head.x >= getWidth() / GRID_SIZE || head.y < 0 || head.y >= getHeight() / GRID_SIZE) {
+            return true;
         }
-        return true;
+
+        for (int i = 1; i < snake.size(); i++) {
+            if (snake.get(i).equals(head)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void setOnGameOverListener(OnGameOverListener listener) {
