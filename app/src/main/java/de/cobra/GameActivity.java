@@ -1,36 +1,104 @@
 package de.cobra;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class GameActivity extends AppCompatActivity {
+    private GameView gameView;
+    private LinearLayout pauseMenu;
+    private int gridSize;
+    private int speed;
+    private String playerName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        GameView gameView = findViewById(R.id.game_view);
-        gameView.setOnGameOverListener(() -> {
-            runOnUiThread(() -> {
-                findViewById(R.id.game_over_layout).setVisibility(View.VISIBLE);
-            });
+        gridSize = getIntent().getIntExtra("gridSize", 40);
+        speed = getIntent().getIntExtra("speed", 3);
+        playerName = getIntent().getStringExtra("playerName");
+
+        gameView = findViewById(R.id.game_view);
+        gameView.setGridSize(gridSize);
+        gameView.setSpeed(speed);
+
+        pauseMenu = findViewById(R.id.pause_menu);
+
+        SeekBar sizeSeekBar = findViewById(R.id.pause_size_seekbar);
+        sizeSeekBar.setProgress(gridSize / 8); // Da die Standardgröße 40 ist
+        sizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                gridSize = (progress + 1) * 8;
+                gameView.setGridSize(gridSize);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        Button restartButton = findViewById(R.id.restart_button);
-        restartButton.setOnClickListener(v -> {
-            Intent intent = new Intent(GameActivity.this, GameActivity.class);
-            startActivity(intent);
-            finish();
+        SeekBar speedSeekBar = findViewById(R.id.pause_speed_seekbar);
+        speedSeekBar.setProgress(speed);
+        speedSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                speed = progress;
+                gameView.setSpeed(speed);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        Button mainMenuButton = findViewById(R.id.main_menu_button);
-        mainMenuButton.setOnClickListener(v -> {
-            Intent intent = new Intent(GameActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
+        EditText nameEditText = findViewById(R.id.pause_name_edittext);
+        nameEditText.setText(playerName);
+        nameEditText.setOnEditorActionListener((v, actionId, event) -> {
+            playerName = nameEditText.getText().toString();
+            return false;
         });
+
+        Button resumeButton = findViewById(R.id.resume_button);
+        resumeButton.setOnClickListener(v -> {
+            pauseMenu.setVisibility(View.GONE);
+            gameView.resumeGame();
+        });
+
+        Button restartButtonPause = findViewById(R.id.restart_button_pause);
+        restartButtonPause.setOnClickListener(v -> {
+            gameView.initializeGame();
+            pauseMenu.setVisibility(View.GONE);
+            gameView.resumeGame();
+        });
+
+        Button mainMenuButtonPause = findViewById(R.id.main_menu_button_pause);
+        mainMenuButtonPause.setOnClickListener(v -> finish());
+    }
+
+    public void showPauseMenu() {
+        pauseMenu.setVisibility(View.VISIBLE);
+        gameView.pauseGame();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (pauseMenu.getVisibility() == View.VISIBLE) {
+            pauseMenu.setVisibility(View.GONE);
+            gameView.resumeGame();
+        } else {
+            showPauseMenu();
+        }
     }
 }

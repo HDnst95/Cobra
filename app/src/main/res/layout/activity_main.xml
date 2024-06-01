@@ -7,54 +7,46 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/start_button"
+        android:id="@+id/start_game_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Start Game"
-        app:layout_constraintBottom_toTopOf="@+id/multiplayer_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/options_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp"/>
-
-    <Button
-        android:id="@+id/multiplayer_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Multiplayer"
-        app:layout_constraintBottom_toTopOf="@+id/options_button"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="16dp"/>
+        android:layout_margin="16dp"/>
 
     <Button
         android:id="@+id/options_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Options"
-        app:layout_constraintBottom_toTopOf="@+id/highscores_button"
+        app:layout_constraintTop_toBottomOf="@id/start_game_button"
+        app:layout_constraintBottom_toTopOf="@id/shop_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="16dp"/>
-
-    <Button
-        android:id="@+id/highscores_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Highscores"
-        app:layout_constraintBottom_toTopOf="@+id/shop_button"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="16dp"/>
+        android:layout_margin="16dp"/>
 
     <Button
         android:id="@+id/shop_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Shop"
+        app:layout_constraintTop_toBottomOf="@id/options_button"
+        app:layout_constraintBottom_toTopOf="@id/multiplayer_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_margin="16dp"/>
+
+    <Button
+        android:id="@+id/multiplayer_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Multiplayer"
+        app:layout_constraintTop_toBottomOf="@id/shop_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="16dp"/>
-
+        android:layout_margin="16dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

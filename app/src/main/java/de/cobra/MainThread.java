@@ -7,7 +7,8 @@ public class MainThread extends Thread {
     private SurfaceHolder surfaceHolder;
     private GameView gameView;
     private boolean running;
-    public static final int MAX_FPS = 30;
+    public static final int DEFAULT_FPS = 30;
+    private int targetFPS = DEFAULT_FPS;
     private double averageFPS;
 
     public MainThread(SurfaceHolder surfaceHolder, GameView gameView) {
@@ -20,6 +21,10 @@ public class MainThread extends Thread {
         running = isRunning;
     }
 
+    public void setFPS(int fps) {
+        targetFPS = fps;
+    }
+
     @Override
     public void run() {
         long startTime;
@@ -27,7 +32,7 @@ public class MainThread extends Thread {
         long waitTime;
         long totalTime = 0;
         int frameCount = 0;
-        long targetTime = 1000 / MAX_FPS;
+        long targetTime = 1000 / targetFPS;
 
         while (running) {
             startTime = System.nanoTime();
@@ -63,7 +68,7 @@ public class MainThread extends Thread {
 
             totalTime += System.nanoTime() - startTime;
             frameCount++;
-            if (frameCount == MAX_FPS) {
+            if (frameCount == targetFPS) {
                 averageFPS = 1000 / ((totalTime / frameCount) / 1000000);
                 frameCount = 0;
                 totalTime = 0;

@@ -21,9 +21,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private Paint paint;
     private int direction;
     private boolean running;
+    private boolean paused;
     private OnGameOverListener onGameOverListener;
 
-    private static final int GRID_SIZE = 40; // Erhöhe die Größe der Zellen
+    private static final int DEFAULT_GRID_SIZE = 40;
+    private static final int DEFAULT_SPEED = 3;
+    private int gridSize = DEFAULT_GRID_SIZE;
+    private int speed = DEFAULT_SPEED;
+
     private static final int MOVE_RIGHT = 0;
     private static final int MOVE_LEFT = 1;
     private static final int MOVE_UP = 2;
@@ -39,6 +44,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
 
+        initializeGame();
+    }
+
+    public void initializeGame() {
         snake = new ArrayList<>();
         snake.add(new Point(5, 5));
         snake.add(new Point(4, 5));
@@ -49,6 +58,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         paint = new Paint();
         direction = MOVE_RIGHT;
         running = true;
+        paused = false;
     }
 
     @Override
@@ -131,12 +141,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             paint.setStyle(Paint.Style.FILL);
             paint.setAlpha(255);
             for (Point p : snake) {
-                canvas.drawRect(p.x * GRID_SIZE, p.y * GRID_SIZE, (p.x + 1) * GRID_SIZE, (p.y + 1) * GRID_SIZE, paint);
+                canvas.drawRect(p.x * gridSize, p.y * gridSize, (p.x + 1) * gridSize, (p.y + 1) * gridSize, paint);
             }
 
             // Zeichne die Nahrung
             paint.setColor(Color.RED);
-            canvas.drawRect(food.x * GRID_SIZE, food.y * GRID_SIZE, (food.x + 1) * GRID_SIZE, (food.y + 1) * GRID_SIZE, paint);
+            canvas.drawRect(food.x * gridSize, food.y * gridSize, (food.x + 1) * gridSize, (food.y + 1) * gridSize, paint);
 
             // Zeichne den Berührungsindikator
             if (showTouchIndicator) {
@@ -172,7 +182,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     public void update() {
-        if (!running) return;
+        if (!running || paused) return;
 
         Point head = snake.get(0);
         Point newHead = new Point(head.x, head.y);
@@ -212,11 +222,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void generateFood() {
         Random random = new Random();
-        food.set(random.nextInt(getWidth() / GRID_SIZE), random.nextInt(getHeight() / GRID_SIZE));
+        food.set(random.nextInt(getWidth() / gridSize), random.nextInt(getHeight() / gridSize));
     }
 
     private boolean checkCollision(Point head) {
-        if (head.x < 0 || head.x >= getWidth() / GRID_SIZE || head.y < 0 || head.y >= getHeight() / GRID_SIZE) {
+        if (head.x < 0 || head.x >= getWidth() / gridSize || head.y < 0 || head.y >= getHeight() / gridSize) {
             return true;
         }
 
@@ -231,6 +241,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void setOnGameOverListener(OnGameOverListener listener) {
         this.onGameOverListener = listener;
+    }
+
+    public void setGridSize(int size) {
+        gridSize = size;
+        initializeGame();
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+        thread.setFPS(speed * 10); // Beispiel: Geschwindigkeit anpassen
+    }
+
+    public void pauseGame() {
+        paused = true;
+    }
+
+    public void resumeGame() {
+        paused = false;
     }
 
     public interface OnGameOverListener {
