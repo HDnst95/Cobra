@@ -1,33 +1,52 @@
 package de.cobra;
 
+import android.content.Context;
 import android.graphics.Canvas;
+import android.util.AttributeSet;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
-public class GameEngine extends Thread {
-    private boolean running;
+public class GameEngine extends SurfaceView implements SurfaceHolder.Callback {
+    private MainThread thread;
     private GameView gameView;
 
-    public GameEngine(GameView gameView) {
-        this.gameView = gameView;
-    }
-
-    public void setRunning(boolean running) {
-        this.running = running;
+    public GameEngine(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        getHolder().addCallback(this);
+        gameView = new GameView(context, attrs);
+        thread = new MainThread(getHolder(), gameView);
+        setFocusable(true);
     }
 
     @Override
-    public void run() {
-        while (running) {
-            Canvas canvas = null;
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        if (thread.getState() == Thread.State.TERMINATED) {
+            thread = new MainThread(getHolder(), gameView);
+        }
+        thread.setRunning(true);
+        thread.start();
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        boolean retry = true;
+        while (retry) {
             try {
-                canvas = gameView.getHolder().lockCanvas();
-                synchronized (gameView.getHolder()) {
-                    gameView.onDraw(canvas);
-                }
-            } finally {
-                if (canvas != null) {
-                    gameView.getHolder().unlockCanvasAndPost(canvas);
-                }
+                thread.setRunning(false);
+                thread.join();
+                retry = false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+        gameView.draw(canvas);
     }
 }
