@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class GameActivity extends AppCompatActivity {
     private GameView gameView;
     private LinearLayout pauseMenu;
+    private LinearLayout gameOverMenu;
     private int gridSize;
     private int speed;
     private String playerName;
@@ -28,8 +29,10 @@ public class GameActivity extends AppCompatActivity {
         gameView = findViewById(R.id.game_view);
         gameView.setGridSize(gridSize);
         gameView.setSpeed(speed);
+        gameView.setOnGameOverListener(this::showGameOverMenu);
 
         pauseMenu = findViewById(R.id.pause_menu);
+        gameOverMenu = findViewById(R.id.game_over_menu);
 
         SeekBar sizeSeekBar = findViewById(R.id.pause_size_seekbar);
         sizeSeekBar.setProgress(gridSize / 8); // Da die Standardgröße 40 ist
@@ -85,11 +88,25 @@ public class GameActivity extends AppCompatActivity {
 
         Button mainMenuButtonPause = findViewById(R.id.main_menu_button_pause);
         mainMenuButtonPause.setOnClickListener(v -> finish());
+
+        Button restartButton = findViewById(R.id.restart_button);
+        restartButton.setOnClickListener(v -> {
+            gameOverMenu.setVisibility(View.GONE);
+            gameView.initializeGame();
+            gameView.resumeGame();
+        });
+
+        Button mainMenuButton = findViewById(R.id.main_menu_button);
+        mainMenuButton.setOnClickListener(v -> finish());
     }
 
     public void showPauseMenu() {
         pauseMenu.setVisibility(View.VISIBLE);
         gameView.pauseGame();
+    }
+
+    public void showGameOverMenu() {
+        gameOverMenu.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -102,3 +119,4 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 }
+
