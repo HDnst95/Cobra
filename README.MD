@@ -13,37 +13,37 @@ Cobra ist ein Android-Spiel, das in Java entwickelt wurde und ein Elo-Ratingsyst
 
 ## Hierarchische Darstellung der App-Menüs
 
-1. **MainActivity (Startbildschirm)**
+1. **Startbildschirm**
    - Starten des Spiels
    - Wechsel zum Mehrspielermodus
    - Öffnen der Optionen
    - Anzeigen der Highscores
    - Öffnen des Shops
 
-2. **GameActivity (Spielbildschirm)**
+2. **Spielbildschirm**
    - GameView: Hauptspielfläche, Spieler-Charakter, Feinde, Power-Ups
    - Spiel-Menü (Overlay): Spiel pausieren, Score-Anzeige, Lebens-Anzeige, Punkte-Anzeige (Elo-Punkte)
 
-3. **MultiplayerLobbyActivity (Multiplayer-Lobby)**
+3. **Multiplayer-Lobby**
    - Anzeigen der verbundenen Spieler
    - Erstellen eines neuen Spiels
    - Beitreten zu einem bestehenden Spiel
    - Zurück zum Startbildschirm
 
-4. **OptionsActivity (Optionen-Bildschirm)**
+4. **Optionen-Bildschirm**
    - Ändern der Grafikeinstellungen
    - Ändern der Soundeinstellungen
    - Konfigurieren der Steuerung
 
-5. **HighscoresActivity (Highscores-Bildschirm)**
+5. **Highscores-Bildschirm**
    - Anzeigen der höchsten Punktzahlen
    - Zurück zum Startbildschirm
 
-6. **ShopActivity (Shop-Bildschirm)**
+6. **Shop-Bildschirm**
    - Kaufen von Gegenständen und Upgrades
    - Anzeigen der verfügbaren Punkte
 
-7. **PauseMenuActivity (Pausen-Menü)**
+7. **Pausen-Menü**
    - Fortsetzen des Spiels
    - Neustarten des Spiels
    - Zurück zum Hauptmenü
