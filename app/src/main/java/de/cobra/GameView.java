@@ -38,6 +38,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private float touchY;
     private boolean showTouchIndicator;
 
+    private int playableHeight;
+
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
         getHolder().addCallback(this);
@@ -59,6 +61,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         direction = MOVE_RIGHT;
         running = true;
         paused = false;
+        playableHeight = (int) (getHeight() * 0.8); // 80% der Höhe ist das Spielfeld
     }
 
     @Override
@@ -94,10 +97,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             paint.setColor(Color.TRANSPARENT);
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(5);
-            canvas.drawRect(0, 0, getWidth(), getHeight() / 3, paint); // Oben
-            canvas.drawRect(0, 2 * getHeight() / 3, getWidth(), getHeight(), paint); // Unten
-            canvas.drawRect(0, getHeight() / 3, getWidth() / 3, 2 * getHeight() / 3, paint); // Links
-            canvas.drawRect(2 * getWidth() / 3, getHeight() / 3, getWidth(), 2 * getHeight() / 3, paint); // Rechts
+            canvas.drawRect(0, 0, getWidth(), playableHeight / 3, paint); // Oben
+            canvas.drawRect(0, 2 * playableHeight / 3, getWidth(), playableHeight, paint); // Unten
+            canvas.drawRect(0, playableHeight / 3, getWidth() / 3, 2 * playableHeight / 3, paint); // Links
+            canvas.drawRect(2 * getWidth() / 3, playableHeight / 3, getWidth(), 2 * playableHeight / 3, paint); // Rechts
 
             // Zeichne die Pfeile
             paint.setColor(Color.LTGRAY);
@@ -106,33 +109,33 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             // Pfeil nach oben
             Path pathUp = new Path();
-            pathUp.moveTo(getWidth() / 2, getHeight() / 6);
-            pathUp.lineTo(getWidth() / 2 - 50, getHeight() / 3 - 50);
-            pathUp.lineTo(getWidth() / 2 + 50, getHeight() / 3 - 50);
+            pathUp.moveTo(getWidth() / 2, playableHeight / 6);
+            pathUp.lineTo(getWidth() / 2 - 50, playableHeight / 3 - 50);
+            pathUp.lineTo(getWidth() / 2 + 50, playableHeight / 3 - 50);
             pathUp.close();
             canvas.drawPath(pathUp, paint);
 
             // Pfeil nach unten
             Path pathDown = new Path();
-            pathDown.moveTo(getWidth() / 2, 5 * getHeight() / 6);
-            pathDown.lineTo(getWidth() / 2 - 50, 2 * getHeight() / 3 + 50);
-            pathDown.lineTo(getWidth() / 2 + 50, 2 * getHeight() / 3 + 50);
+            pathDown.moveTo(getWidth() / 2, 5 * playableHeight / 6);
+            pathDown.lineTo(getWidth() / 2 - 50, 2 * playableHeight / 3 + 50);
+            pathDown.lineTo(getWidth() / 2 + 50, 2 * playableHeight / 3 + 50);
             pathDown.close();
             canvas.drawPath(pathDown, paint);
 
             // Pfeil nach links
             Path pathLeft = new Path();
-            pathLeft.moveTo(getWidth() / 6, getHeight() / 2);
-            pathLeft.lineTo(getWidth() / 3 - 50, getHeight() / 2 - 50);
-            pathLeft.lineTo(getWidth() / 3 - 50, getHeight() / 2 + 50);
+            pathLeft.moveTo(getWidth() / 6, playableHeight / 2);
+            pathLeft.lineTo(getWidth() / 3 - 50, playableHeight / 2 - 50);
+            pathLeft.lineTo(getWidth() / 3 - 50, playableHeight / 2 + 50);
             pathLeft.close();
             canvas.drawPath(pathLeft, paint);
 
             // Pfeil nach rechts
             Path pathRight = new Path();
-            pathRight.moveTo(5 * getWidth() / 6, getHeight() / 2);
-            pathRight.lineTo(2 * getWidth() / 3 + 50, getHeight() / 2 - 50);
-            pathRight.lineTo(2 * getWidth() / 3 + 50, getHeight() / 2 + 50);
+            pathRight.moveTo(5 * getWidth() / 6, playableHeight / 2);
+            pathRight.lineTo(2 * getWidth() / 3 + 50, playableHeight / 2 - 50);
+            pathRight.lineTo(2 * getWidth() / 3 + 50, playableHeight / 2 + 50);
             pathRight.close();
             canvas.drawPath(pathRight, paint);
 
@@ -163,9 +166,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             touchY = event.getY();
             showTouchIndicator = true;
 
-            if (touchY < getHeight() / 3 && direction != MOVE_DOWN) {
+            if (touchY < playableHeight / 3 && direction != MOVE_DOWN) {
                 direction = MOVE_UP;
-            } else if (touchY > 2 * getHeight() / 3 && direction != MOVE_UP) {
+            } else if (touchY > 2 * playableHeight / 3 && direction != MOVE_UP) {
                 direction = MOVE_DOWN;
             } else if (touchX < getWidth() / 3 && direction != MOVE_RIGHT) {
                 direction = MOVE_LEFT;
@@ -222,11 +225,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void generateFood() {
         Random random = new Random();
-        food.set(random.nextInt(getWidth() / gridSize), random.nextInt(getHeight() / gridSize));
+        food.set(random.nextInt(getWidth() / gridSize), random.nextInt(playableHeight / gridSize));
     }
 
     private boolean checkCollision(Point head) {
-        if (head.x < 0 || head.x >= getWidth() / gridSize || head.y < 0 || head.y >= getHeight() / gridSize) {
+        if (head.x < 0 || head.x >= getWidth() / gridSize || head.y < 0 || head.y >= playableHeight / gridSize) {
             return true;
         }
 
