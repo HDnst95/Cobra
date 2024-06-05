@@ -8,6 +8,8 @@ import android.widget.SeekBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import de.cobra.game.GameActivity;
+
 public class OptionsActivity extends AppCompatActivity {
     private int gridSize = 40;
     private int speed = 3;

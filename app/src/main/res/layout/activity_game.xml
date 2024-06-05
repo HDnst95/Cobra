@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GameActivity">
+    tools:context=".game.GameActivity">
 
-    <de.cobra.GameView
+    <de.cobra.game.GameView
         android:id="@+id/game_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
