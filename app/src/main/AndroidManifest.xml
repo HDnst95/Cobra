@@ -19,32 +19,34 @@
         </activity>
 
         <activity
-            android:name=".game.GameActivity"
-            android:exported="false" />
+<activity
+    android:name=".game.GameActivity"
+    android:exported="true" />
 
-        <activity
-            android:name=".MultiplayerLobbyActivity"
-            android:exported="false" />
+<activity
+    android:name=".MultiplayerLobbyActivity"
+    android:exported="true" />
 
-        <activity
-            android:name=".OptionsActivity"
-            android:exported="false" />
+<activity
+    android:name=".OptionsActivity"
+    android:exported="true" />
 
-        <activity
-            android:name=".HighscoresActivity"
-            android:exported="false" />
+<activity
+    android:name=".HighscoresActivity"
+    android:exported="true" />
 
-        <activity
-            android:name=".ShopActivity"
-            android:exported="false" />
+<activity
+    android:name=".ShopActivity"
+    android:exported="true" />
 
-        <activity
-            android:name=".PauseMenuActivity"
-            android:exported="false" />
+<activity
+    android:name=".PauseMenuActivity"
+    android:exported="true" />
 
-        <activity
-            android:name=".MultiplayerPauseMenuActivity"
-            android:exported="false" />
+<activity
+    android:name=".MultiplayerPauseMenuActivity"
+    android:exported="true" />
+
 
     </application>
 
