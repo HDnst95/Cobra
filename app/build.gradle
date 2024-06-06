@@ -1,60 +1,38 @@
-apply plugin: 'com.android.application'
+plugins {
+    alias(libs.plugins.android.application)
+}
 
 android {
-    compileSdkVersion 30
+    namespace 'de.cobra'
+    compileSdk 34
+
     defaultConfig {
-        applicationId "de.cobra" // Korrigierte Application ID
-        minSdkVersion 21
-        targetSdkVersion 34
-        versionCode getVersionCode()
-        versionName getVersionName()
+        applicationId "de.cobra"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName '0.1'
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-}
-
-def getVersionCode() {
-    def versionPropsFile = file('../version.properties')
-    if (versionPropsFile.canRead()) {
-        def Properties versionProps = new Properties()
-        versionProps.load(new FileInputStream(versionPropsFile))
-        return versionProps['VERSION_CODE'].toInteger()
-    } else {
-        throw new GradleException("Could not read version.properties!")
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
-def getVersionName() {
-    def versionPropsFile = file('../version.properties')
-    if (versionPropsFile.canRead()) {
-        def Properties versionProps = new Properties()
-        versionProps.load(new FileInputStream(versionPropsFile))
-        return versionProps['VERSION_NAME']
-    } else {
-        throw new GradleException("Could not read version.properties!")
-    }
+dependencies {
+
+    implementation libs.appcompat
+    implementation libs.material
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
 }
-
-task incrementVersionCode {
-    doLast {
-        def versionPropsFile = file('../version.properties')
-        def Properties versionProps = new Properties()
-
-        if (versionPropsFile.canRead()) {
-            versionProps.load(new FileInputStream(versionPropsFile))
-
-            def versionCode = versionProps['VERSION_CODE'].toInteger() + 1
-            versionProps['VERSION_CODE'] = versionCode.toString()
-
-            versionProps.store(versionPropsFile.newWriter(), null)
-        } else {
-            throw new GradleException("Could not read version.properties!")
-        }
-    }
-}
-
-preBuild.dependsOn incrementVersionCode

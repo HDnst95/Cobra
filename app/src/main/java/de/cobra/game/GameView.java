@@ -25,7 +25,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private OnGameOverListener onGameOverListener;
 
     private static final int DEFAULT_GRID_SIZE = 40;
-    private static final int DEFAULT_SPEED = 3;
+    private static final int DEFAULT_SPEED = 2;
     private int gridSize = DEFAULT_GRID_SIZE;
     private int speed = DEFAULT_SPEED;
 
@@ -52,8 +52,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     public void initializeGame() {
         snake = new ArrayList<>();
         snake.add(new Point(5, 5));
-        snake.add(new Point(4, 5));
-        snake.add(new Point(3, 5));
+        snake.add(new Point(5, 4));
+        snake.add(new Point(5, 3));
 
         food = new Point(10, 10);
 
