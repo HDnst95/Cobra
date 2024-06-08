@@ -1,82 +1,68 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OptionsActivity">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/size_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Size:"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:text="Optionen"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Grafikeinstellungen"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp" />
 
     <SeekBar
-        android:id="@+id/size_seekbar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:max="5"
-        android:progress="3"
-        app:layout_constraintTop_toBottomOf="@id/size_label"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:id="@+id/sbGraphics"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/speed_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Speed:"
-        app:layout_constraintTop_toBottomOf="@id/size_seekbar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:text="Soundeinstellungen"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp" />
 
     <SeekBar
-        android:id="@+id/speed_seekbar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:max="5"
-        android:progress="3"
-        app:layout_constraintTop_toBottomOf="@id/speed_label"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:id="@+id/sbSound"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/name_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name:"
-        app:layout_constraintTop_toBottomOf="@id/speed_seekbar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:text="Steuerungseinstellungen"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp" />
 
-    <EditText
-        android:id="@+id/name_edittext"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/name_label"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+    <RadioGroup
+        android:id="@+id/rgControl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:id="@+id/rbTouch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Touch" />
+        <RadioButton
+            android:id="@+id/rbSwipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Swipe" />
+    </RadioGroup>
 
     <Button
-        android:id="@+id/save_button"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnSaveOptions"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save"
-        app:layout_constraintTop_toBottomOf="@id/name_edittext"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="16dp"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:text="Speichern"
+        android:layout_marginTop="16dp" />
+</LinearLayout>

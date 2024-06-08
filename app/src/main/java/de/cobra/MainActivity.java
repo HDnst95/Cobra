@@ -2,8 +2,7 @@ package de.cobra;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-
+import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -13,29 +12,39 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button startGameButton = findViewById(R.id.start_game_button);
-        startGameButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, OptionsActivity.class);
-            intent.putExtra("mode", "singleplayer");
-            startActivity(intent);
+        findViewById(R.id.btnSinglePlayer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, GameActivity.class));
+            }
         });
 
-        Button optionsButton = findViewById(R.id.options_button);
-        optionsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, OptionsActivity.class);
-            startActivity(intent);
+        findViewById(R.id.btnMultiplayer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, MultiplayerLobbyActivity.class));
+            }
         });
 
-        Button shopButton = findViewById(R.id.shop_button);
-        shopButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ShopActivity.class);
-            startActivity(intent);
+        findViewById(R.id.btnOptions).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, OptionsActivity.class));
+            }
         });
 
-        Button multiplayerButton = findViewById(R.id.multiplayer_button);
-        multiplayerButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, MultiplayerGameActivity.class);
-            startActivity(intent);
+        findViewById(R.id.btnHighscores).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, HighscoresActivity.class));
+            }
+        });
+
+        findViewById(R.id.btnShop).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ShopActivity.class));
+            }
         });
     }
 }
