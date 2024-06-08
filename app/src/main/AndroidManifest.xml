@@ -7,47 +7,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-
-        <activity
-            android:name=".MainActivity"
+        android:theme="@style/Theme.Cobra">
+        <activity android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-<activity
-    android:name=".game.GameActivity"
-    android:exported="true" />
-
-<activity
-    android:name=".MultiplayerLobbyActivity"
-    android:exported="true" />
-
-<activity
-    android:name=".OptionsActivity"
-    android:exported="true" />
-
-<activity
-    android:name=".HighscoresActivity"
-    android:exported="true" />
-
-<activity
-    android:name=".ShopActivity"
-    android:exported="true" />
-
-<activity
-    android:name=".PauseMenuActivity"
-    android:exported="true" />
-
-<activity
-    android:name=".MultiplayerPauseMenuActivity"
-    android:exported="true" />
-
-
+        <activity android:name=".GameActivity" />
+        <activity android:name=".MultiplayerLobbyActivity" />
+        <activity android:name=".OptionsActivity" />
+        <activity android:name=".HighscoresActivity" />
+        <activity android:name=".ShopActivity" />
     </application>
 
 </manifest>

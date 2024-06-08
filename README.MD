@@ -49,12 +49,6 @@ Cobra ist ein Android-Spiel, das in Java entwickelt wurde und ein Elo-Ratingsyst
    - Zurück zum Hauptmenü
    - Beenden der App
 
-## Verwendung
-
-1. Starte die App auf einem Emulator oder einem Android-Gerät.
-2. Navigiere durch die Menüs und spiele entweder im Einzelspieler- oder Mehrspielermodus.
-3. Nutze den Shop, um mit deinen verdienten Punkten Gegenstände und Upgrades zu kaufen.
-
 ## Lizenz
 
 Dieses Projekt ist lizenziert unter der MIT-Lizenz.
